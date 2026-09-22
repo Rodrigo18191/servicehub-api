@@ -1,0 +1,92 @@
+### ServiceHub API - requisições de teste
+### Abra no IntelliJ (HTTP Client) ou no VS Code (extensão "REST Client") e clique em "Send Request".
+
+@base = http://localhost:8080/api/servicos
+
+### 1. POST - cadastrar (201 Created + header Location)
+POST {{base}}
+Content-Type: application/json
+
+{
+  "nome": "Instalação de chuveiro elétrico",
+  "descricao": "Instalação de chuveiro com troca de resistência e verificação do disjuntor",
+  "preco": 150.00,
+  "categoria": "Elétrica",
+  "duracaoMinutos": 60
+}
+
+### 2. POST - outro serviço
+POST {{base}}
+Content-Type: application/json
+
+{
+  "nome": "Limpeza residencial completa",
+  "descricao": "Limpeza de todos os cômodos, incluindo janelas",
+  "preco": 220.00,
+  "categoria": "Limpeza",
+  "duracaoMinutos": 240
+}
+
+### 3. GET - listar todos (200)
+GET {{base}}
+
+### 4. GET - filtrar por categoria (200)
+GET {{base}}?categoria=elétrica
+
+### 5. GET - buscar por id (200)
+GET {{base}}/1
+
+### 6. PUT - atualizar (200)
+PUT {{base}}/1
+Content-Type: application/json
+
+{
+  "nome": "Instalação de chuveiro elétrico",
+  "descricao": "Instalação completa, com troca de resistência",
+  "preco": 180.00,
+  "categoria": "Elétrica",
+  "duracaoMinutos": 90
+}
+
+### 7. PATCH - desativar (200)
+PATCH {{base}}/1/status
+Content-Type: application/json
+
+{ "ativo": false }
+
+### 8. DELETE - excluir (204)
+DELETE {{base}}/2
+
+### ---------- Cenários de erro ----------
+
+### 9. 400 - validação (nome vazio, preço negativo)
+POST {{base}}
+Content-Type: application/json
+
+{
+  "nome": "",
+  "preco": -10,
+  "categoria": "Elétrica"
+}
+
+### 10. 400 - JSON malformado
+POST {{base}}
+Content-Type: application/json
+
+{ "nome": "Teste", "preco": "abc" }
+
+### 11. 400 - id inválido
+GET {{base}}/abc
+
+### 12. 404 - id inexistente
+GET {{base}}/999
+
+### 13. 409 - nome duplicado (rode depois do passo 1)
+POST {{base}}
+Content-Type: application/json
+
+{
+  "nome": "instalação de chuveiro elétrico",
+  "preco": 99.90,
+  "categoria": "Elétrica"
+}
