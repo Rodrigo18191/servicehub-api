@@ -94,35 +94,33 @@ src/main/java/br/com/servicehub
 
 ### 1. Pré-requisitos
 - JDK 17 ou superior
-- PostgreSQL rodando na porta 5432
-- Maven (ou uma IDE com Maven embutido, como o IntelliJ)
+- Docker (para o PostgreSQL)
+- **Não precisa instalar o Maven:** o projeto inclui o Maven Wrapper (`mvnw` / `mvnw.cmd`)
 
-### 2. Criar o banco
-```sql
-CREATE DATABASE servicehub;
-```
-As tabelas são criadas automaticamente pelo Hibernate (`ddl-auto=update`).
-
-### 3. Configurar usuário e senha
-Em `src/main/resources/application.properties`, ajuste a senha do seu PostgreSQL
-(o padrão é usuário `postgres` e senha `postgres`), **ou** defina variáveis de ambiente:
-
+### 2. Subir o banco (PostgreSQL via Docker)
 ```bash
-# Windows (PowerShell)
-$env:DB_PASSWORD="minha_senha"
-# Linux / Mac
-export DB_PASSWORD=minha_senha
+docker compose up -d
 ```
+Isso cria o banco `servicehub` (usuário `postgres`, senha `postgres`) na porta 5432.
+As tabelas são criadas automaticamente pelo Hibernate (`ddl-auto=update`).
+Para parar: `docker compose down` (os dados ficam no volume `servicehub-data`).
 
-### 4. Executar
+> **Sem Docker?** Use um PostgreSQL local, rode `CREATE DATABASE servicehub;` e, se a sua
+> senha não for `postgres`, defina a variável de ambiente `DB_PASSWORD`
+> (PowerShell: `$env:DB_PASSWORD="minha_senha"` · Linux/Mac: `export DB_PASSWORD=minha_senha`).
+
+### 3. Executar
 Pela IDE: rode a classe `ServicehubApiApplication`.
 
 Pelo terminal:
 ```bash
-mvn spring-boot:run
+# Windows
+mvnw.cmd spring-boot:run
+# Linux / Mac
+./mvnw spring-boot:run
 ```
 
-### 5. Acessar
+### 4. Acessar
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 - OpenAPI (JSON): http://localhost:8080/v3/api-docs
 
@@ -131,6 +129,7 @@ IntelliJ ou no VS Code (extensão REST Client).
 
 ### Testes
 ```bash
-mvn test
+mvnw.cmd test      # Windows
+./mvnw test        # Linux / Mac
 ```
 Os testes unitários do `ServicoService` usam Mockito e **não precisam de banco**.
