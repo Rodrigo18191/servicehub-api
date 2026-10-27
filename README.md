@@ -97,19 +97,30 @@ src/main/java/br/com/servicehub
 - Docker (para o PostgreSQL)
 - **Não precisa instalar o Maven:** o projeto inclui o Maven Wrapper (`mvnw` / `mvnw.cmd`)
 
-### 2. Subir o banco (PostgreSQL via Docker)
+### 2. Configurar as credenciais (`.env`)
+As credenciais do banco não ficam no código nem no Git. Copie o modelo e defina a sua senha:
+```bash
+cp .env.example .env
+```
+| Variável | Uso |
+|---|---|
+| `DB_USERNAME` | Usuário do PostgreSQL |
+| `DB_PASSWORD` | Senha do PostgreSQL |
+
+O `.env` é lido pelo Docker Compose e pela aplicação (`spring.config.import`) e está no `.gitignore`.
+
+### 3. Subir o banco (PostgreSQL via Docker)
 ```bash
 docker compose up -d
 ```
-Isso cria o banco `servicehub` (usuário `postgres`, senha `postgres`) na porta 5432.
+Isso cria o banco `servicehub` na porta 5432, com o usuário e a senha definidos no `.env`.
 As tabelas são criadas automaticamente pelo Hibernate (`ddl-auto=update`).
 Para parar: `docker compose down` (os dados ficam no volume `servicehub-data`).
 
-> **Sem Docker?** Use um PostgreSQL local, rode `CREATE DATABASE servicehub;` e, se a sua
-> senha não for `postgres`, defina a variável de ambiente `DB_PASSWORD`
-> (PowerShell: `$env:DB_PASSWORD="minha_senha"` · Linux/Mac: `export DB_PASSWORD=minha_senha`).
+> **Sem Docker?** Use um PostgreSQL local, rode `CREATE DATABASE servicehub;` e coloque o
+> usuário e a senha dele no `.env`.
 
-### 3. Executar
+### 4. Executar
 Pela IDE: rode a classe `ServicehubApiApplication`.
 
 Pelo terminal:
@@ -120,7 +131,7 @@ mvnw.cmd spring-boot:run
 ./mvnw spring-boot:run
 ```
 
-### 4. Acessar
+### 5. Acessar
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 - OpenAPI (JSON): http://localhost:8080/v3/api-docs
 
